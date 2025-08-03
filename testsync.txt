@@ -1,2 +1,0 @@
-# This command creates a new text file with some content
-New-Item test.txt -Value "This is a sync test."
