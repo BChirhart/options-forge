@@ -15,7 +15,7 @@ interface Course {
 }
 
 export default function Dashboard() {
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
   const router = useRouter();
   const [courses, setCourses] = useState<Course[]>([]);
 

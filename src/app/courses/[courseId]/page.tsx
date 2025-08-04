@@ -1,12 +1,11 @@
-// Define a clear type for the props our page will receive
-type CoursePageProps = {
-  params: {
-    courseId: string;
-  };
+// Define a more complete and robust type for the page's props
+type Props = {
+  params: { courseId: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
-// Use our new type to define the component's props
-export default function CoursePage({ params }: CoursePageProps) {
+// Use our new Props type here
+export default function CoursePage({ params }: Props) {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold">Course Details</h1>
@@ -16,7 +15,6 @@ export default function CoursePage({ params }: CoursePageProps) {
           {params.courseId}
         </span>
       </p>
-      {/* Later, we will fetch and display the lessons for this course here */}
     </div>
   );
 }
