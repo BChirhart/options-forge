@@ -1,14 +1,18 @@
-// This is a Server Component, so we don't need 'use client'
+// Define a clear type for the props our page will receive
+type CoursePageProps = {
+  params: {
+    courseId: string;
+  };
+};
 
-// The 'params' object is automatically passed to dynamic pages
-// The shape of 'params' matches our folder structure: { courseId: '...' }
-export default function CoursePage({ params }: { params: { courseId: string } }) {
+// Use our new type to define the component's props
+export default function CoursePage({ params }: CoursePageProps) {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold">Course Details</h1>
       <p className="mt-4 text-lg">
-        You are viewing the page for course ID: 
-        <span className="font-mono bg-gray-200 text-black px-2 py-1 rounded-md ml-2">
+        You are viewing the page for course ID:
+        <span className="ml-2 rounded-md bg-gray-200 px-2 py-1 font-mono text-black">
           {params.courseId}
         </span>
       </p>
