@@ -1,10 +1,24 @@
-// Define a more complete and robust type for the page's props
-type Props = {
-  params: { courseId: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+import type { Metadata, ResolvingMetadata } from 'next'
 
-// Use our new Props type here
+type Props = {
+  params: { courseId: string }
+}
+
+// This function generates dynamic metadata (like the page title)
+// It's the modern, recommended way to handle this.
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // For now, we'll just use the ID. Later, we can fetch the course title.
+  const id = params.courseId
+ 
+  return {
+    title: `Course: ${id}`,
+  }
+}
+ 
+// The page component itself remains simple.
 export default function CoursePage({ params }: Props) {
   return (
     <div className="p-8">
@@ -16,5 +30,5 @@ export default function CoursePage({ params }: Props) {
         </span>
       </p>
     </div>
-  );
+  )
 }
