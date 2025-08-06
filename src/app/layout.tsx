@@ -1,20 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google"; // 1. Import Inter instead of Geist
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// 2. Initialize the Inter font
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Options Forge",
-  description: "Created using Google Gemini and Next.js",
+  title: "OptionsForge",
+  description: "A platform for learning stock and options trading.",
 };
 
 export default function RootLayout({
@@ -24,11 +17,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      {/* 3. Use the Inter font class on the body */}
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
