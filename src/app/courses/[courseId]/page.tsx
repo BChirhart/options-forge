@@ -1,10 +1,15 @@
-// This empty function helps the Next.js build process understand
-// how to handle this dynamic page, which can resolve build errors.
-export async function generateStaticParams() {
-  return [];
+import type { NextPage } from 'next'
+
+// Define the shape of the props our page receives
+type Props = {
+  params: {
+    courseId: string
+  }
 }
 
-export default function CoursePage({ params }: { params: { courseId: string } }) {
+// Use the official NextPage type to define our component.
+// This is the key change that should satisfy the build server.
+const CoursePage: NextPage<Props> = ({ params }) => {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold">Course Details</h1>
@@ -15,5 +20,7 @@ export default function CoursePage({ params }: { params: { courseId: string } })
         </span>
       </p>
     </div>
-  );
+  )
 }
+
+export default CoursePage
