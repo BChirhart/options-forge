@@ -1,55 +1,34 @@
-'use client'; // This component now needs to be a client component
+'use client';
 
-import { useState, useEffect } from 'react';
-import { auth } from '@/lib/firebase'; // Import our configured auth
-import { onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // 1. Import the router
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import LoginButton from '@/components/LoginButton';
 
 export default function Home() {
-  // Create a state variable to store the user's info
-  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter(); // 2. Initialize the router
 
-  // Use useEffect to run code once when the component loads
+  // This effect now handles the redirect
   useEffect(() => {
-    // onAuthStateChanged is the listener. It gives us the user object if they're
-    // logged in, or null if they're logged out.
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // 3. If a user is found, immediately send them to the dashboard
+      if (user) {
+        router.push('/dashboard');
+      }
     });
 
-    // Clean up the listener when the component is unmounted
+    // Clean up the listener when the component unmounts
     return () => unsubscribe();
-  }, []); // The empty array ensures this runs only once
+  }, [router]); // 4. Add router to the dependency array
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      console.log("Successfully signed out!");
-    } catch (error) {
-      console.error("Error signing out", error);
-    }
-  };
-
+  // The UI is now simplified to just be a login portal
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="text-4xl font-bold">Welcome to Options Forge</h1>
-      
+      <h1 className="text-4xl font-bold">Welcome to OptionsForge</h1>
       <div className="mt-8">
-        {user ? (
-          // If the user IS logged in, show this:
-          <div>
-            <p>Welcome, {user.displayName || user.email}!</p>
-            <button
-              onClick={handleLogout}
-              className="mt-4 rounded-lg bg-red-500 px-4 py-2 font-semibold text-white hover:bg-red-600"
-            >
-              Sign Out
-            </button>
-          </div>
-        ) : (
-          // If the user is NOT logged in, show this:
-          <LoginButton />
-        )}
+        <LoginButton />
+        <p className="mt-4 text-sm text-gray-500">Please sign in to continue.</p>
       </div>
     </main>
   );
