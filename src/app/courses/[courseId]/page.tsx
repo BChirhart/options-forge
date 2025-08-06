@@ -1,5 +1,10 @@
-// Add the 'async' keyword here
-export default async function CoursePage({ params }: { params: { courseId: string } }) {
+// This empty function helps the Next.js build process understand
+// how to handle this dynamic page, which can resolve build errors.
+export async function generateStaticParams() {
+  return [];
+}
+
+export default function CoursePage({ params }: { params: { courseId: string } }) {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold">Course Details</h1>
