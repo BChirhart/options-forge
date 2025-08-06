@@ -1,15 +1,24 @@
 // src/app/courses/[courseId]/page.tsx
 
-// 1. Define a type for your component's props
+import type { Metadata } from 'next';
+
+// This Props type can be used by both the page and generateMetadata
 type Props = {
-  params: {
-    courseId: string;
-  };
-  // You can also add searchParams here if you need them
-  // searchParams: { [key: string]: string | string[] | undefined };
+  params: { courseId: string };
 };
 
-// 2. Use the 'Props' type for your component
+// 1. Add a correctly typed generateMetadata function
+// It uses the same Props type but MUST return a Promise<Metadata>
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // You can fetch data here to create a dynamic title, etc.
+  const id = params.courseId;
+  return {
+    title: `Details for Course ${id}`,
+  };
+}
+
+// 2. Your page component using the same Props type
+// This part is the same as the previous fix
 export default async function CoursePage({ params }: Props) {
   return (
     <div className="p-8">
