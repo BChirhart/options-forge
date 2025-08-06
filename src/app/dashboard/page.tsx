@@ -54,7 +54,7 @@ export default function Dashboard() {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {courses.map(course => (
             // 2. Wrap the card div in a Link component
-            <Link key={course.id} href={`/courses/${course.id}`}>
+            <Link key={course.id} href={`/test/${course.id}`}>
               <div className="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer h-full">
                 <h3 className="font-bold text-xl text-white">{course.title}</h3>
                 <p className="mt-2 text-gray-400">{course.description}</p>
