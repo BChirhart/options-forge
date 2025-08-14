@@ -65,7 +65,7 @@ export default function LevelPage({ params }: LevelPageProps) {
       
       <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {courses.map(course => (
-          <Link key={course.id} href={`#`} className="group">
+          <Link key={course.id} href={`/levels/${levelId}/courses/${course.id}`} className="group">
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg h-full flex flex-col justify-between transition-transform duration-300 group-hover:scale-105">
               <div>
                 <h3 className="font-bold text-xl text-white">{course.title}</h3>
