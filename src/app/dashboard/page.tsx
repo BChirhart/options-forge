@@ -36,6 +36,7 @@ export default function Dashboard() {
     }
   }, [user, loading, router]);
 
+  // Effect to fetch levels from Firestore
   useEffect(() => {
     if (user) {
       const fetchLevels = async () => {

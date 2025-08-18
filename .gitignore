@@ -45,3 +45,6 @@ next-env.d.ts
 
 #Seeder sctipt
 options-forge-seeder/
+
+#Service Account
+options-forge-seeder/
