@@ -1,20 +1,18 @@
 'use client';
 
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/lib/firebase';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import type { User } from '@/types';
+import { auth } from '@/lib/firebase';
 
 interface UseAuthReturn {
-  user: User | null | undefined;
+  user: User | null;
   loading: boolean;
   error: Error | undefined;
-  isAuthenticated: boolean;
 }
 
 /**
- * Custom hook for authentication state management
  * Handles auth state and automatic redirects for protected routes
  */
 export function useAuth(redirectIfUnauthenticated = false): UseAuthReturn {
@@ -27,20 +25,17 @@ export function useAuth(redirectIfUnauthenticated = false): UseAuthReturn {
     }
   }, [user, loading, redirectIfUnauthenticated, router]);
 
-  const userData: User | null | undefined = user
-    ? {
-        uid: user.uid,
-        displayName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-      }
-    : null;
-
   return {
-    user: userData,
+    user: user
+      ? {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+        }
+      : null,
     loading,
     error,
-    isAuthenticated: !!user,
   };
 }
 

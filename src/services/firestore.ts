@@ -3,15 +3,12 @@ import {
   doc,
   getDoc,
   getDocs,
-  query,
   orderBy,
-  QuerySnapshot,
-  DocumentData,
+  query,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { Level, Course, Lesson } from '@/types';
 
-// Error class for Firestore operations
 export class FirestoreError extends Error {
   constructor(message: string, public code?: string) {
     super(message);
@@ -20,7 +17,7 @@ export class FirestoreError extends Error {
 }
 
 /**
- * Fetch all levels from Firestore
+ * Fetch all levels ordered by their `order` field.
  */
 export async function fetchLevels(): Promise<Level[]> {
   try {
@@ -31,14 +28,14 @@ export async function fetchLevels(): Promise<Level[]> {
       ...doc.data(),
     })) as Level[];
   } catch (error) {
-    throw new FirestoreError(
-      `Failed to fetch levels: ${error instanceof Error ? error.message : 'Unknown error'}`
-    );
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorCode = (error as any)?.code || 'unknown';
+    throw new FirestoreError(`Failed to fetch levels: ${errorMessage}`, errorCode);
   }
 }
 
 /**
- * Fetch all courses for a specific level
+ * Fetch all courses for a given level ordered by their `order` field.
  */
 export async function fetchCourses(levelId: string): Promise<Course[]> {
   try {
@@ -52,45 +49,32 @@ export async function fetchCourses(levelId: string): Promise<Course[]> {
       ...doc.data(),
     })) as Course[];
   } catch (error) {
-    throw new FirestoreError(
-      `Failed to fetch courses for level ${levelId}: ${error instanceof Error ? error.message : 'Unknown error'}`
-    );
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorCode = (error as any)?.code || 'unknown';
+    throw new FirestoreError(`Failed to fetch courses: ${errorMessage}`, errorCode);
   }
 }
 
 /**
- * Fetch a single course by ID
+ * Fetch a single course document.
  */
-export async function fetchCourse(
-  levelId: string,
-  courseId: string
-): Promise<Course | null> {
+export async function fetchCourse(levelId: string, courseId: string): Promise<Course | null> {
   try {
     const courseRef = doc(db, `levels/${levelId}/courses`, courseId);
     const courseSnap = await getDoc(courseRef);
-
-    if (!courseSnap.exists()) {
-      return null;
-    }
-
-    return {
-      id: courseSnap.id,
-      ...courseSnap.data(),
-    } as Course;
+    if (!courseSnap.exists()) return null;
+    return { id: courseSnap.id, ...courseSnap.data() } as Course;
   } catch (error) {
-    throw new FirestoreError(
-      `Failed to fetch course ${courseId}: ${error instanceof Error ? error.message : 'Unknown error'}`
-    );
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorCode = (error as any)?.code || 'unknown';
+    throw new FirestoreError(`Failed to fetch course: ${errorMessage}`, errorCode);
   }
 }
 
 /**
- * Fetch all lessons for a specific course
+ * Fetch lessons for a course ordered by `order`.
  */
-export async function fetchLessons(
-  levelId: string,
-  courseId: string
-): Promise<Lesson[]> {
+export async function fetchLessons(levelId: string, courseId: string): Promise<Lesson[]> {
   try {
     const lessonsQuery = query(
       collection(db, `levels/${levelId}/courses/${courseId}/lessons`),
@@ -102,14 +86,14 @@ export async function fetchLessons(
       ...doc.data(),
     })) as Lesson[];
   } catch (error) {
-    throw new FirestoreError(
-      `Failed to fetch lessons for course ${courseId}: ${error instanceof Error ? error.message : 'Unknown error'}`
-    );
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorCode = (error as any)?.code || 'unknown';
+    throw new FirestoreError(`Failed to fetch lessons: ${errorMessage}`, errorCode);
   }
 }
 
 /**
- * Fetch a single lesson by ID
+ * Fetch a single lesson document.
  */
 export async function fetchLesson(
   levelId: string,
@@ -117,25 +101,14 @@ export async function fetchLesson(
   lessonId: string
 ): Promise<Lesson | null> {
   try {
-    const lessonRef = doc(
-      db,
-      `levels/${levelId}/courses/${courseId}/lessons`,
-      lessonId
-    );
+    const lessonRef = doc(db, `levels/${levelId}/courses/${courseId}/lessons`, lessonId);
     const lessonSnap = await getDoc(lessonRef);
-
-    if (!lessonSnap.exists()) {
-      return null;
-    }
-
-    return {
-      id: lessonSnap.id,
-      ...lessonSnap.data(),
-    } as Lesson;
+    if (!lessonSnap.exists()) return null;
+    return { id: lessonSnap.id, ...lessonSnap.data() } as Lesson;
   } catch (error) {
-    throw new FirestoreError(
-      `Failed to fetch lesson ${lessonId}: ${error instanceof Error ? error.message : 'Unknown error'}`
-    );
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorCode = (error as any)?.code || 'unknown';
+    throw new FirestoreError(`Failed to fetch lesson: ${errorMessage}`, errorCode);
   }
 }
 
