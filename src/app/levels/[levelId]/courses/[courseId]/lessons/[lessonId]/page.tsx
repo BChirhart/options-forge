@@ -31,43 +31,72 @@ function highlightText(text: string) {
     { regex: /\b(exercise|exercised|exercising)\b/gi, color: 'var(--brand-primary)', weight: 600, tooltip: 'exercise' }, // Exercise in primary
   ];
 
-  let result: Array<{ text: string; color?: string; weight?: number; tooltip?: string | boolean }> = [{ text }];
+  let result: Array<{ text: string; color?: string; weight?: number; tooltip?: string }> = [{ text }];
 
   patterns.forEach(({ regex, color, weight, tooltip }) => {
-    const newResult: Array<{ text: string; color?: string; weight?: number; tooltip?: string | boolean }> = [];
+    const newResult: Array<{ text: string; color?: string; weight?: number; tooltip?: string }> = [];
     result.forEach((segment) => {
       if (segment.color) {
         // Already highlighted, keep as is
         newResult.push(segment);
       } else {
-        // Create a new regex instance for each test
-        const testRegex = new RegExp(regex.source, regex.flags);
-        const parts = segment.text.split(regex);
-        parts.forEach((part, idx) => {
-          if (part) {
-            // Test if this part matches the pattern
-            testRegex.lastIndex = 0;
-            if (testRegex.test(part)) {
-              const lowerPart = part.toLowerCase();
-              let tooltipKey: string | undefined;
-              
-              if (tooltip === true) {
-                // For Call/Put, determine which one
-                if (lowerPart.includes('call')) {
-                  tooltipKey = 'call';
-                } else if (lowerPart.includes('put')) {
-                  tooltipKey = 'put';
-                }
-              } else if (typeof tooltip === 'string') {
-                tooltipKey = tooltip;
+        // Use matchAll to find all matches with their positions
+        const matches: Array<{ match: string; index: number }> = [];
+        const regexCopy = new RegExp(regex.source, regex.flags);
+        let match;
+        
+        // Reset regex
+        regexCopy.lastIndex = 0;
+        while ((match = regexCopy.exec(segment.text)) !== null) {
+          matches.push({ match: match[0], index: match.index });
+          // Prevent infinite loop on zero-length matches
+          if (match[0].length === 0) {
+            regexCopy.lastIndex++;
+          }
+        }
+        
+        if (matches.length === 0) {
+          // No matches, keep original text
+          newResult.push({ text: segment.text });
+        } else {
+          // Split text by matches
+          let lastIndex = 0;
+          matches.forEach(({ match: matchText, index }) => {
+            // Add text before match
+            if (index > lastIndex) {
+              const beforeText = segment.text.substring(lastIndex, index);
+              if (beforeText) {
+                newResult.push({ text: beforeText });
               }
-              
-              newResult.push({ text: part, color, weight, tooltip: tooltipKey });
-            } else {
-              newResult.push({ text: part });
+            }
+            
+            // Add matched text with styling
+            const lowerMatch = matchText.toLowerCase();
+            let tooltipKey: string | undefined;
+            
+            if (tooltip === true) {
+              // For Call/Put, determine which one
+              if (lowerMatch.includes('call')) {
+                tooltipKey = 'call';
+              } else if (lowerMatch.includes('put')) {
+                tooltipKey = 'put';
+              }
+            } else if (typeof tooltip === 'string') {
+              tooltipKey = tooltip;
+            }
+            
+            newResult.push({ text: matchText, color, weight, tooltip: tooltipKey });
+            lastIndex = index + matchText.length;
+          });
+          
+          // Add remaining text after last match
+          if (lastIndex < segment.text.length) {
+            const afterText = segment.text.substring(lastIndex);
+            if (afterText) {
+              newResult.push({ text: afterText });
             }
           }
-        });
+        }
       }
     });
     result = newResult;
@@ -93,7 +122,7 @@ function highlightText(text: string) {
         </span>
       );
       
-      if (segment.tooltip && typeof segment.tooltip === 'string' && tooltipDefinitions[segment.tooltip]) {
+      if (segment.tooltip && tooltipDefinitions[segment.tooltip]) {
         return (
           <Tooltip key={idx} text={segment.text} definition={tooltipDefinitions[segment.tooltip]}>
             {styledSpan}
