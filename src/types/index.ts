@@ -17,6 +17,14 @@ export interface Lesson {
   title: string;
   videoId: string;
   textContent: string;
+  questions?: Array<{
+    question: string;
+    options: Array<{
+      text: string;
+      isCorrect: boolean;
+      feedback: string;
+    }>;
+  }>;
   order: number;
 }
 
