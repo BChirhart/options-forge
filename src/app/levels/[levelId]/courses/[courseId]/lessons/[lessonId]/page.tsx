@@ -1,14 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import Link from 'next/link';
-import type { Lesson } from '@/types';
 import ThemeToggle from '@/components/ThemeToggle';
 import { signOut } from 'firebase/auth';
+import { getLesson } from '@/services/content';
 
 export default function LessonPage() {
   const router = useRouter();
@@ -17,40 +16,16 @@ export default function LessonPage() {
   const courseId = params.courseId as string;
   const lessonId = params.lessonId as string;
   const [user, loading] = useAuthState(auth);
-  const [lesson, setLesson] = useState<Lesson | null>(null);
-  const [loadingData, setLoadingData] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/');
       return;
     }
+  }, [user, loading, router]);
 
-    if (user && levelId && courseId && lessonId) {
-      loadLesson();
-    }
-  }, [user, loading, levelId, courseId, lessonId, router]);
-
-  const loadLesson = async () => {
-    try {
-      setLoadingData(true);
-      setError(null);
-
-      const lessonRef = doc(db, `levels/${levelId}/courses/${courseId}/lessons`, lessonId);
-      const lessonSnap = await getDoc(lessonRef);
-      if (lessonSnap.exists()) {
-        setLesson({ id: lessonSnap.id, ...lessonSnap.data() } as Lesson);
-      } else {
-        setError('Lesson not found');
-      }
-    } catch (err) {
-      console.error('Error loading lesson:', err);
-      setError('Failed to load lesson');
-    } finally {
-      setLoadingData(false);
-    }
-  };
+  // Load content synchronously from files
+  const lesson = getLesson(levelId, courseId, lessonId);
 
   const handleSignOut = async () => {
     try {
@@ -61,7 +36,7 @@ export default function LessonPage() {
     }
   };
 
-  if (loading || loadingData) {
+  if (loading) {
     return (
       <div className="app-shell">
         <main className="hero">
@@ -71,12 +46,12 @@ export default function LessonPage() {
     );
   }
 
-  if (error || !lesson) {
+  if (!lesson) {
     return (
       <div className="app-shell">
         <main className="hero">
           <div className="glass-card" style={{ textAlign: 'center' }}>
-            <p style={{ color: '#ef4444', fontWeight: 600 }}>{error || 'Lesson not found'}</p>
+            <p style={{ color: '#ef4444', fontWeight: 600 }}>Lesson not found</p>
             <Link href={`/levels/${levelId}/courses/${courseId}`} className="button-secondary">
               Back to Course
             </Link>
@@ -117,7 +92,7 @@ export default function LessonPage() {
         </section>
 
         <section className="glass-card" style={{ display: 'grid', gap: '1.5rem' }}>
-          {lesson.videoId && (
+          {lesson.videoId && lesson.videoId.trim() && !lesson.videoId.startsWith('placeholder') && (
             <div style={{ borderRadius: '18px', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
               <div
                 style={{
@@ -148,11 +123,70 @@ export default function LessonPage() {
 
           {lesson.textContent && (
             <article style={{ display: 'grid', gap: '1rem', color: 'var(--text-secondary)' }}>
-              {lesson.textContent.split('\n').map((paragraph, idx) => (
-                <p key={idx} style={{ margin: 0 }}>
-                  {paragraph}
-                </p>
-              ))}
+              {lesson.textContent.split('\n\n').map((paragraph, idx) => {
+                // Skip empty paragraphs
+                if (!paragraph.trim()) return null;
+                
+                // Check if paragraph contains bullet points
+                const lines = paragraph.split('\n').filter(line => line.trim());
+                const hasBullets = lines.some(line => line.trim().startsWith('•') || line.trim().startsWith('-'));
+                
+                if (hasBullets) {
+                  // Split into intro text and bullet items
+                  const introLines: string[] = [];
+                  const bulletItems: string[] = [];
+                  let foundBullets = false;
+                  
+                  lines.forEach(line => {
+                    const trimmed = line.trim();
+                    if ((trimmed.startsWith('•') || trimmed.startsWith('-')) && !foundBullets) {
+                      foundBullets = true;
+                    }
+                    if (foundBullets && (trimmed.startsWith('•') || trimmed.startsWith('-'))) {
+                      bulletItems.push(trimmed);
+                    } else if (!foundBullets) {
+                      introLines.push(line);
+                    }
+                  });
+                  
+                  return (
+                    <div key={idx}>
+                      {introLines.length > 0 && (
+                        <p style={{ margin: 0, marginBottom: '0.5rem', lineHeight: '1.6' }}>
+                          {introLines.join(' ')}
+                        </p>
+                      )}
+                      {bulletItems.length > 0 && (
+                        <ul style={{ margin: 0, paddingLeft: '1.5rem', listStyle: 'none' }}>
+                          {bulletItems.map((item, itemIdx) => (
+                            <li key={itemIdx} style={{ marginBottom: '0.5rem', position: 'relative', lineHeight: '1.6' }}>
+                              <span style={{ position: 'absolute', left: '-1.5rem' }}>•</span>
+                              {item.replace(/^[•-]\s*/, '')}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  );
+                }
+                
+                // Regular paragraph - check if it's a heading (no period, shorter, bold-like)
+                const isHeading = paragraph.length < 100 && !paragraph.includes('.') && paragraph.split(' ').length < 10;
+                
+                return (
+                  <div key={idx}>
+                    {isHeading ? (
+                      <h3 style={{ margin: 0, marginBottom: '0.5rem', fontWeight: 600, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
+                        {paragraph}
+                      </h3>
+                    ) : (
+                      <p style={{ margin: 0, lineHeight: '1.6' }}>
+                        {paragraph}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
             </article>
           )}
 

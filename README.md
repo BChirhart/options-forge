@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OptionsForge
+
+A Next.js learning platform for options trading, deployed on Firebase.
 
 ## Getting Started
 
@@ -6,31 +8,45 @@ First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project is deployed on **Firebase Hosting** with **Firebase Functions** for server-side rendering.
+
+### Deploy to Firebase
+
+Deploy everything (functions + hosting):
+```bash
+npm run deploy
+```
+
+Deploy only hosting (faster, for static changes):
+```bash
+npm run deploy:hosting
+```
+
+The app is live at: https://options-forge.web.app
+
+### Important Notes
+
+- **This project is deployed exclusively on Firebase** - not Vercel
+- If you have Vercel auto-deployment enabled via GitHub integration, please disconnect it to avoid conflicts
+- Full deployments (`npm run deploy`) take longer because they rebuild and deploy Cloud Functions
+- Use `deploy:hosting` for faster deployments when only making UI/content changes
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Hosting**: Firebase Hosting
+- **Backend**: Firebase Functions (Cloud Run)
+- **Database**: Firestore
+- **Authentication**: Firebase Auth (Google Sign-in)
+- **Styling**: TailwindCSS
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Firebase Hosting Documentation](https://firebase.google.com/docs/hosting)

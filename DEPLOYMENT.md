@@ -2,57 +2,61 @@
 
 ## Current Status
 
-⚠️ **Note**: The app currently uses nested dynamic routes (`/levels/[levelId]/courses/[courseId]/lessons/[lessonId]`), which makes static export challenging. The build succeeds without static export, but Firebase Hosting requires static files.
+✅ **Deployed**: The app is successfully deployed on Firebase Hosting with Firebase Functions (Cloud Run) for server-side rendering.
 
-## Deployment Options
+- **Live URL**: https://options-forge.web.app
+- **Firebase Project**: `options-forge`
+- **Deployment Method**: Firebase Hosting + Cloud Functions (2nd Gen)
 
-### Option 1: Firebase Hosting with Cloud Functions (Recommended for Production)
+## Deployment Commands
 
-For full Next.js support with SSR and dynamic routes:
+### Full Deployment (Functions + Hosting)
+```bash
+npm run deploy
+```
+This rebuilds the Next.js app, copies it to the functions directory, and deploys both Cloud Functions and Hosting. Takes longer (~5-10 minutes) but ensures everything is in sync.
 
-1. **Install Firebase Functions dependencies**:
-   ```bash
-   npm install firebase-functions@latest firebase-admin@latest
-   ```
+### Hosting Only (Faster)
+```bash
+npm run deploy:hosting
+```
+Use this for quick deployments when you've only changed static assets or UI. Note: If you changed code that affects the Cloud Function, you'll need a full deployment.
 
-2. **Use Firebase Functions for Next.js** - This requires additional setup. See [Firebase Next.js documentation](https://firebase.google.com/docs/hosting/frameworks/nextjs)
+## Important: Vercel Disconnection
 
-### Option 2: Static Export (Current Build Works)
+⚠️ **If you see updates on your old Vercel site**, it means Vercel has GitHub integration enabled and is auto-deploying on every push.
 
-The build currently works without static export. To deploy to Firebase Hosting with static files, you'll need to:
+**To disconnect from Vercel:**
 
-1. **Build the app**:
-   ```bash
-   npm run build
-   ```
+1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
+2. Find your `options-forge` project
+3. Go to **Settings** → **Git**
+4. Click **Disconnect** or **Remove** the GitHub integration
+5. Alternatively, delete the project entirely from Vercel
 
-2. **Deploy the `.next` folder** (Note: This is a workaround - Firebase Hosting expects static files)
-
-   Update `firebase.json` to point to the static export directory once we resolve the nested dynamic routes issue.
-
-### Option 3: Manual Static File Deployment
-
-If you want to use static export, you'll need to either:
-- Pre-generate all routes at build time using Firebase Admin SDK
-- Use catch-all routes instead of nested dynamic routes
+**This project should ONLY deploy to Firebase**, not Vercel.
 
 ## Current Configuration
 
 - **Firebase Project ID**: `options-forge`
 - **Build Output**: `.next` folder
-- **Firebase Hosting**: Configured to serve from `.next` (may need adjustment)
+- **Firebase Hosting**: Serves static assets from `.next`
+- **Firebase Functions**: Serves Next.js app via Cloud Run (`nextjsFunc`)
+- **Database**: Firestore
+- **Authentication**: Firebase Auth
 
-## Prerequisites
+## How It Works
 
-1. **Firebase CLI** - Already installed (v14.15.2) ✅
-
-2. **Login to Firebase** - Already logged in ✅
-
-3. **Project Configuration** - Already set up ✅
+1. `npm run build` creates the Next.js build in `.next/`
+2. Predeploy script copies `.next/` to `functions/.next/`
+3. Firebase Functions packages the function with the Next.js build
+4. Cloud Run serves the Next.js app for SSR and dynamic routes
+5. Firebase Hosting serves static assets and proxies all requests to the Cloud Function
 
 ## Environment Variables
 
-Make sure you have a `.env.local` file with:
+Environment variables are embedded at build time for `NEXT_PUBLIC_*` variables. Make sure your `.env.local` file has all required Firebase config:
+
 ```
 NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-auth-domain
@@ -63,12 +67,18 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your-measurement-id
 ```
 
-## Next Steps
+## Troubleshooting
 
-To fully deploy to Firebase Hosting with nested dynamic routes, we need to:
-1. Either use Firebase Functions for Next.js (recommended)
-2. Or refactor routes to use catch-all patterns
-3. Or pre-generate all routes at build time
+### Changes not appearing on live site
+- If you only ran `deploy:hosting`, try a full `npm run deploy` to update the Cloud Function
+- Check Firebase Functions logs: `firebase functions:log`
 
-The current build works, but Firebase Hosting needs static files or Cloud Functions setup.
+### Deployment takes too long
+- Full deployments are slower because they rebuild and deploy Cloud Functions
+- Use `deploy:hosting` for static-only changes (but remember it won't update the Cloud Function)
+
+### Still seeing Vercel deployments
+- Check Vercel dashboard and disconnect GitHub integration
+- Verify no Vercel CLI commands are being run
+- Check GitHub Actions if you have CI/CD set up
 

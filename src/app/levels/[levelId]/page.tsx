@@ -1,14 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import Link from 'next/link';
-import type { Course, Level } from '@/types';
 import ThemeToggle from '@/components/ThemeToggle';
 import { signOut } from 'firebase/auth';
+import { getLevel, getCourses } from '@/services/content';
 
 const levelDescriptions: Record<string, string> = {
   beginner:
@@ -24,48 +23,17 @@ export default function LevelPage() {
   const params = useParams();
   const levelId = params.levelId as string;
   const [user, loading] = useAuthState(auth);
-  const [level, setLevel] = useState<Level | null>(null);
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loadingData, setLoadingData] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/');
       return;
     }
+  }, [user, loading, router]);
 
-    if (user && levelId) {
-      loadData();
-    }
-  }, [user, loading, levelId, router]);
-
-  const loadData = async () => {
-    try {
-      setLoadingData(true);
-      setError(null);
-
-      const levelRef = doc(db, 'levels', levelId);
-      const levelSnap = await getDoc(levelRef);
-      if (levelSnap.exists()) {
-        setLevel({ id: levelSnap.id, ...levelSnap.data() } as Level);
-      }
-
-      const coursesRef = collection(db, `levels/${levelId}/courses`);
-      const q = query(coursesRef, orderBy('order'));
-      const querySnapshot = await getDocs(q);
-      const coursesData = querySnapshot.docs.map((courseDoc) => ({
-        id: courseDoc.id,
-        ...courseDoc.data(),
-      })) as Course[];
-      setCourses(coursesData);
-    } catch (err) {
-      console.error('Error loading data:', err);
-      setError('Failed to load data');
-    } finally {
-      setLoadingData(false);
-    }
-  };
+  // Load content synchronously from files
+  const level = getLevel(levelId);
+  const courses = getCourses(levelId);
 
   const handleSignOut = async () => {
     try {
@@ -76,7 +44,7 @@ export default function LevelPage() {
     }
   };
 
-  if (loading || loadingData) {
+  if (loading) {
     return (
       <div className="app-shell">
         <main className="hero">
@@ -86,12 +54,12 @@ export default function LevelPage() {
     );
   }
 
-  if (error || !level) {
+  if (!level) {
     return (
       <div className="app-shell">
         <main className="hero">
           <div className="glass-card" style={{ textAlign: 'center' }}>
-            <p style={{ color: '#ef4444', fontWeight: 600 }}>{error || 'Level not found'}</p>
+            <p style={{ color: '#ef4444', fontWeight: 600 }}>Level not found</p>
             <Link href="/dashboard" className="button-secondary">
               Back to Dashboard
             </Link>

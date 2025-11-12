@@ -1,14 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import Link from 'next/link';
-import type { Course, Lesson } from '@/types';
 import ThemeToggle from '@/components/ThemeToggle';
 import { signOut } from 'firebase/auth';
+import { getCourse, getLessons } from '@/services/content';
 
 export default function CoursePage() {
   const router = useRouter();
@@ -16,48 +15,17 @@ export default function CoursePage() {
   const levelId = params.levelId as string;
   const courseId = params.courseId as string;
   const [user, loading] = useAuthState(auth);
-  const [course, setCourse] = useState<Course | null>(null);
-  const [lessons, setLessons] = useState<Lesson[]>([]);
-  const [loadingData, setLoadingData] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/');
       return;
     }
+  }, [user, loading, router]);
 
-    if (user && levelId && courseId) {
-      loadData();
-    }
-  }, [user, loading, levelId, courseId, router]);
-
-  const loadData = async () => {
-    try {
-      setLoadingData(true);
-      setError(null);
-
-      const courseRef = doc(db, `levels/${levelId}/courses`, courseId);
-      const courseSnap = await getDoc(courseRef);
-      if (courseSnap.exists()) {
-        setCourse({ id: courseSnap.id, ...courseSnap.data() } as Course);
-      }
-
-      const lessonsRef = collection(db, `levels/${levelId}/courses/${courseId}/lessons`);
-      const q = query(lessonsRef, orderBy('order'));
-      const querySnapshot = await getDocs(q);
-      const lessonsData = querySnapshot.docs.map((lessonDoc) => ({
-        id: lessonDoc.id,
-        ...lessonDoc.data(),
-      })) as Lesson[];
-      setLessons(lessonsData);
-    } catch (err) {
-      console.error('Error loading data:', err);
-      setError('Failed to load data');
-    } finally {
-      setLoadingData(false);
-    }
-  };
+  // Load content synchronously from files
+  const course = getCourse(levelId, courseId);
+  const lessons = getLessons(levelId, courseId);
 
   const handleSignOut = async () => {
     try {
@@ -68,7 +36,7 @@ export default function CoursePage() {
     }
   };
 
-  if (loading || loadingData) {
+  if (loading) {
     return (
       <div className="app-shell">
         <main className="hero">
@@ -78,12 +46,12 @@ export default function CoursePage() {
     );
   }
 
-  if (error || !course) {
+  if (!course) {
     return (
       <div className="app-shell">
         <main className="hero">
           <div className="glass-card" style={{ textAlign: 'center' }}>
-            <p style={{ color: '#ef4444', fontWeight: 600 }}>{error || 'Course not found'}</p>
+            <p style={{ color: '#ef4444', fontWeight: 600 }}>Course not found</p>
             <Link href={`/levels/${levelId}`} className="button-secondary">
               Back to Level
             </Link>

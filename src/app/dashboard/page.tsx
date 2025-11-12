@@ -1,20 +1,14 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { signOut } from 'firebase/auth';
-import { collection, getDocs, query, orderBy, doc } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import Link from 'next/link';
-import type { Level } from '@/types';
 import { useTheme } from '@/components/ThemeProvider';
 import ThemeToggle from '@/components/ThemeToggle';
-
-interface LevelSummary extends Level {
-  courseCount: number;
-  lessonCount: number;
-}
+import { getLevelSummaries } from '@/services/content';
 
 const levelMeta: Record<string, { icon: string; tagline: string }> = {
   beginner: {
@@ -34,13 +28,8 @@ const levelMeta: Record<string, { icon: string; tagline: string }> = {
 export default function Dashboard() {
   const router = useRouter();
   const [user, loading] = useAuthState(auth);
-  const [levels, setLevels] = useState<LevelSummary[]>([]);
-  const [loadingLevels, setLoadingLevels] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  const [courseTotal, setCourseTotal] = useState(0);
-  const [lessonTotal, setLessonTotal] = useState(0);
 
   const firstName = useMemo(() => {
     if (!user?.displayName) return 'Trader';
@@ -52,56 +41,12 @@ export default function Dashboard() {
       router.push('/');
       return;
     }
-
-    if (user) {
-      loadLevels();
-    }
   }, [user, loading, router]);
 
-  const loadLevels = async () => {
-    try {
-      setLoadingLevels(true);
-      setError(null);
-      const levelsRef = collection(db, 'levels');
-      const qLevels = query(levelsRef, orderBy('order'));
-      const levelSnapshot = await getDocs(qLevels);
-      let totalCourses = 0;
-      let totalLessons = 0;
-
-      const summaries: LevelSummary[] = [];
-      for (const levelDoc of levelSnapshot.docs) {
-        const levelData = { id: levelDoc.id, ...(levelDoc.data() as Omit<Level, 'id'>) } as Level;
-        const coursesSnap = await getDocs(collection(db, `levels/${levelDoc.id}/courses`));
-        let levelLessonCount = 0;
-
-        for (const courseDoc of coursesSnap.docs) {
-          const lessonsSnap = await getDocs(
-            collection(db, `levels/${levelDoc.id}/courses/${courseDoc.id}/lessons`)
-          );
-          levelLessonCount += lessonsSnap.size;
-        }
-
-        const summary: LevelSummary = {
-          ...levelData,
-          courseCount: coursesSnap.size,
-          lessonCount: levelLessonCount,
-        };
-
-        totalCourses += coursesSnap.size;
-        totalLessons += levelLessonCount;
-        summaries.push(summary);
-      }
-
-      setLevels(summaries);
-      setCourseTotal(totalCourses);
-      setLessonTotal(totalLessons);
-    } catch (err) {
-      console.error('Error loading levels:', err);
-      setError('Failed to load levels');
-    } finally {
-      setLoadingLevels(false);
-    }
-  };
+  // Load content synchronously from files
+  const levels = getLevelSummaries();
+  const courseTotal = levels.reduce((sum, level) => sum + level.courseCount, 0);
+  const lessonTotal = levels.reduce((sum, level) => sum + level.lessonCount, 0);
 
   const handleSignOut = async () => {
     try {
@@ -112,26 +57,11 @@ export default function Dashboard() {
     }
   };
 
-  if (loading || loadingLevels) {
+  if (loading) {
     return (
       <div className="app-shell">
         <main className="hero">
           <div className="glass-card">Loading your workspace...</div>
-        </main>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="app-shell">
-        <main className="hero">
-          <div className="glass-card" style={{ textAlign: 'center' }}>
-            <p style={{ color: '#ef4444', fontWeight: 600 }}>{error}</p>
-            <button className="button-primary" onClick={loadLevels}>
-              Retry
-            </button>
-          </div>
         </main>
       </div>
     );

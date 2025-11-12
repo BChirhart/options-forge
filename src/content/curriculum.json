@@ -1,0 +1,159 @@
+{
+  "levels": [
+    {
+      "id": "beginner",
+      "title": "Beginner",
+      "order": 1,
+      "courses": [
+        {
+          "id": "options-fundamentals",
+          "title": "Options Fundamentals",
+          "description": "Start here. Learn what an option is, the key terminology, and how to read an options chain. This is the essential foundation for everything that follows.",
+          "order": 1,
+          "lessons": [
+            {
+              "id": "what-is-an-option-the-right-not-the-obligation",
+              "title": "What is an Option? The Right or the Obligation",
+              "videoId": "",
+              "textContent": "Welcome to the first step in your options trading journey! Before we dive into strategies, we need to understand the fundamental building block: the option itself.\n\nThe \"No Obligation\" Contract\n\nAt its core, an option is a financial contract. It gives the person who buys it the right, but critically, not the obligation, to buy or sell an underlying asset (like a stock) at a predetermined price on or before a specific date.\n\nThink of it like a coupon for a grocery store:\n\n• The coupon gives you the right to buy a can of soup for $1.\n• You are not obligated to buy the soup. You can let the coupon expire.\n• The coupon has an expiration date.\n• The $1 price is a predetermined price.\n\nIn the world of trading, this structure provides incredible flexibility, which is why traders love options.\n\nKey Components of Every Option\n\nEvery option contract has a few key pieces of information you'll need to know:\n\n• Underlying Asset: The stock, ETF, or index the option is based on (e.g., Apple stock, ticker: AAPL).\n• Type: Is it a Call (the right to buy) or a Put (the right to sell)? We'll cover this in the next lesson.\n• Strike Price: The predetermined price at which you can buy or sell the stock.\n• Expiration Date: The date the contract becomes void.\n• Premium: The price you pay to buy the option contract.\n\nWhy Do People Use Options?\n\nTraders use options for two primary reasons:\n\nSpeculation: To make a leveraged bet on the future direction of a stock's price. Because options are cheaper than the stock itself, the potential percentage returns (and losses) can be much higher.\n\nHedging: To protect their existing portfolio. For example, if you own 100 shares of a stock, you could buy a put option to protect yourself against a potential price drop.",
+              "order": 1
+            },
+            {
+              "id": "stocks-vs-options-ownership-vs-rights",
+              "title": "Stocks vs. Options: Ownership vs. Rights",
+              "videoId": "placeholder_102",
+              "textContent": "...",
+              "order": 2
+            },
+            {
+              "id": "calls-vs-puts-the-two-sides-of-the-coin",
+              "title": "Calls vs. Puts: The Two Sides of the Coin",
+              "videoId": "placeholder_103",
+              "textContent": "...",
+              "order": 3
+            },
+            {
+              "id": "the-core-four-strike-expiration-premium-and-underlying",
+              "title": "The Core Four: Strike, Expiration, Premium, and Underlying",
+              "videoId": "placeholder_104",
+              "textContent": "...",
+              "order": 4
+            },
+            {
+              "id": "understanding-moneyness-in-at-and-out-of-the-money",
+              "title": "Understanding 'Moneyness': In, At, and Out of the Money",
+              "videoId": "placeholder_105",
+              "textContent": "...",
+              "order": 5
+            },
+            {
+              "id": "decoding-the-option-chain",
+              "title": "Decoding the Option Chain",
+              "videoId": "placeholder_106",
+              "textContent": "...",
+              "order": 6
+            }
+          ]
+        },
+        {
+          "id": "introduction-to-buying-call-options",
+          "title": "Introduction to Buying Call Options",
+          "description": "Learn the what, why, and how of buying call options. This course focuses on the simple bullish strategy of going 'long' a call.",
+          "order": 2,
+          "lessons": [
+            {
+              "id": "the-goal-of-buying-a-call-unlimited-profit-potential",
+              "title": "The Goal of Buying a Call: Unlimited Profit Potential",
+              "videoId": "placeholder_201",
+              "textContent": "...",
+              "order": 1
+            },
+            {
+              "id": "risk-vs-reward-whats-the-most-you-can-lose",
+              "title": "Risk vs. Reward: What's the Most You Can Lose?",
+              "videoId": "placeholder_202",
+              "textContent": "...",
+              "order": 2
+            },
+            {
+              "id": "reading-the-call-side-of-the-option-chain",
+              "title": "Reading the Call Side of the Option Chain",
+              "videoId": "placeholder_203",
+              "textContent": "...",
+              "order": 3
+            },
+            {
+              "id": "breakeven-calculating-your-target-price",
+              "title": "Breakeven: Calculating Your Target Price",
+              "videoId": "placeholder_204",
+              "textContent": "...",
+              "order": 4
+            },
+            {
+              "id": "a-simple-call-buying-checklist",
+              "title": "A Simple Call Buying Checklist",
+              "videoId": "placeholder_205",
+              "textContent": "...",
+              "order": 5
+            }
+          ]
+        },
+        {
+          "id": "introduction-to-buying-put-options",
+          "title": "Introduction to Buying Put Options",
+          "description": "Discover how to use put options to bet against a stock or to protect your existing investments. This course covers the 'long put' strategy.",
+          "order": 3,
+          "lessons": [
+            {
+              "id": "the-goal-of-buying-a-put-profiting-from-a-downturn",
+              "title": "The Goal of Buying a Put: Profiting from a Downturn",
+              "videoId": "placeholder_301",
+              "textContent": "...",
+              "order": 1
+            },
+            {
+              "id": "risk-vs-reward-for-a-long-put",
+              "title": "Risk vs. Reward for a Long Put",
+              "videoId": "placeholder_302",
+              "textContent": "...",
+              "order": 2
+            },
+            {
+              "id": "reading-the-put-side-of-the-option-chain",
+              "title": "Reading the Put Side of the Option Chain",
+              "videoId": "placeholder_303",
+              "textContent": "...",
+              "order": 3
+            },
+            {
+              "id": "using-puts-to-hedge-an-insurance-policy-for-your-stocks",
+              "title": "Using Puts to Hedge: An Insurance Policy for Your Stocks",
+              "videoId": "placeholder_304",
+              "textContent": "...",
+              "order": 4
+            },
+            {
+              "id": "a-simple-put-buying-checklist",
+              "title": "A Simple Put Buying Checklist",
+              "videoId": "placeholder_305",
+              "textContent": "...",
+              "order": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "intermediate",
+      "title": "Intermediate",
+      "order": 2,
+      "courses": []
+    },
+    {
+      "id": "advanced",
+      "title": "Advanced",
+      "order": 3,
+      "courses": []
+    }
+  ]
+}
