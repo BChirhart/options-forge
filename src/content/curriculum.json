@@ -52,9 +52,66 @@
             },
             {
               "id": "stocks-vs-options-ownership-vs-rights",
-              "title": "Stocks vs. Options: Ownership vs. Rights",
-              "videoId": "placeholder_102",
-              "textContent": "...",
+              "title": "Options - the Parts and Pieces of a Contract",
+              "videoId": "",
+              "textContent": "The moving parts (in plain English)\n\nStrike price: The insured price (your ceiling for calls / floor for puts).\n\nExpiration date: The policy end date; after this, your right disappears, the insurance expires.\n\nPremium: The cost of your policy (your maximum possible loss as a buyer).\n\nContract size: 1 listed option typically controls 100 shares.\n\nExample: Call (right to buy):\n\nStrike $50, premium $2 per share. If stock rips to $60, you can still buy at $50. If stock stays ≤ $50, you let it expire. Max loss = $2 × 100 = $200 per contract.\n\nExample: Put (right to sell):\n\nStrike $50, premium $2 per share. If stock dumps to $40, you can sell at $50. If stock stays ≥ $50, you let it expire. Max loss = $200 per contract.",
+              "questions": [
+                {
+                  "question": "True/False - If you buy a Call, you are required to purchase the stock at the strike price before the option expires?",
+                  "options": [
+                    {
+                      "text": "True",
+                      "isCorrect": false,
+                      "feedback": "As an Option buyer, you have the \"option\" to exercise the Call or not. Allowing it to expire worthless is very common."
+                    },
+                    {
+                      "text": "False",
+                      "isCorrect": true,
+                      "feedback": "As an Option buyer, you have the \"option\" to exercise the Call or not. Allowing it to expire worthless is very common."
+                    }
+                  ]
+                },
+                {
+                  "question": "What is the price you will pay to buy this call?\n\nStrike - $50\n\nPremium - $2\n\nExpiration Date - 12/19/2025",
+                  "options": [
+                    {
+                      "text": "A - $50",
+                      "isCorrect": false,
+                      "feedback": "This is the strike price of the Option contract which is the negotiated price between you and the seller for the underlying stock."
+                    },
+                    {
+                      "text": "B - $2",
+                      "isCorrect": false,
+                      "feedback": "Close! But incorrect. While this IS the premium price, this is the \"per-share\" premium price and needs to be multiplied by the number of shares in the contract, which is almost always 100."
+                    },
+                    {
+                      "text": "C - Nothing until I exercise",
+                      "isCorrect": false,
+                      "feedback": "Insurance always costs something. No one will insure you for free."
+                    },
+                    {
+                      "text": "D - $200",
+                      "isCorrect": true,
+                      "feedback": "$2 premium x 100 shares."
+                    }
+                  ]
+                },
+                {
+                  "question": "True/False - Purchasing an option contract is an agreement between you and another trader?",
+                  "options": [
+                    {
+                      "text": "True",
+                      "isCorrect": true,
+                      "feedback": "While always anonymous, your transaction is between yourself and another trader in the market, not a public \"float\" as it is in stock transactions."
+                    },
+                    {
+                      "text": "False",
+                      "isCorrect": false,
+                      "feedback": "While always anonymous, your transaction is between yourself and another trader in the market, not a public \"float\" as it is in stock transactions."
+                    }
+                  ]
+                }
+              ],
               "order": 2
             },
             {

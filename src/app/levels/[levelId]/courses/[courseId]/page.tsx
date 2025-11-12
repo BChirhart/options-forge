@@ -93,23 +93,52 @@ export default function CoursePage() {
         </section>
 
         <section className="lesson-list">
-          {lessons.map((lesson) => (
-            <Link
-              key={lesson.id}
-              href={`/levels/${levelId}/courses/${courseId}/lessons/${lesson.id}`}
-              className="lesson-card"
-            >
-              <div className="lesson-icon" aria-hidden>
-                📘
-              </div>
-              <h3>{lesson.title}</h3>
-              <p>
-                Refine your understanding in a focused lesson. Capture the key insight and how you will apply it in your
-                next trade review.
-              </p>
-              <span className="learn-more">Open lesson</span>
-            </Link>
-          ))}
+          {lessons.map((lesson) => {
+            const isDisabled = lesson.order > 1;
+            
+            if (isDisabled) {
+              return (
+                <div
+                  key={lesson.id}
+                  className="lesson-card"
+                  style={{
+                    opacity: 0.5,
+                    cursor: 'not-allowed',
+                    pointerEvents: 'none',
+                    filter: 'grayscale(0.5)',
+                  }}
+                >
+                  <div className="lesson-icon" aria-hidden>
+                    📘
+                  </div>
+                  <h3>{lesson.title}</h3>
+                  <p>
+                    Refine your understanding in a focused lesson. Capture the key insight and how you will apply it in your
+                    next trade review.
+                  </p>
+                  <span className="learn-more" style={{ opacity: 0.6 }}>Coming soon</span>
+                </div>
+              );
+            }
+            
+            return (
+              <Link
+                key={lesson.id}
+                href={`/levels/${levelId}/courses/${courseId}/lessons/${lesson.id}`}
+                className="lesson-card"
+              >
+                <div className="lesson-icon" aria-hidden>
+                  📘
+                </div>
+                <h3>{lesson.title}</h3>
+                <p>
+                  Refine your understanding in a focused lesson. Capture the key insight and how you will apply it in your
+                  next trade review.
+                </p>
+                <span className="learn-more">Open lesson</span>
+              </Link>
+            );
+          })}
         </section>
       </main>
 

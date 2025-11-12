@@ -63,9 +63,13 @@ export default function Quiz({ questions }: QuizProps) {
               background: 'var(--surface-color)',
             }}
           >
-            <p style={{ margin: 0, fontWeight: 600, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-              {q.question}
-            </p>
+            <div style={{ margin: 0, fontWeight: 600, fontSize: '1.1rem', color: 'var(--text-primary)', display: 'grid', gap: '0.5rem' }}>
+              {q.question.split('\n\n').map((paragraph, idx) => (
+                <p key={idx} style={{ margin: 0 }}>
+                  {paragraph}
+                </p>
+              ))}
+            </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
               {q.options.map((option, optionIndex) => {
                 const isSelected = selectedOption === optionIndex;

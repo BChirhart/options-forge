@@ -7,13 +7,16 @@ import { auth } from '@/lib/firebase';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import { signOut } from 'firebase/auth';
-import { getLesson } from '@/services/content';
+import { getLesson, getLessons } from '@/services/content';
 import Quiz, { type QuizQuestion } from '@/components/Quiz';
 import Tooltip from '@/components/Tooltip';
 
 // Tooltip definitions
 const tooltipDefinitions: Record<string, string> = {
-  premium: 'The price you pay for buying the option',
+  premium: 'The cost of the option, per share',
+  'strike price': 'The agreed upon stock price in the contract',
+  strike: 'The agreed upon stock price in the contract',
+  'expiration date': 'The last day that the contract is able to be exercised.',
   call: 'The right to buy stock at a set price within a defined amount of time',
   put: 'The right to sell stock at a set price within a defined amount of time',
   exercise: 'You act on your option call.',
@@ -25,7 +28,10 @@ const tooltipDefinitions: Record<string, string> = {
 function highlightText(text: string) {
   const patterns = [
     { regex: /\$(\d+)/g, color: '#10b981', weight: 600 }, // Dollar amounts in green
-    { regex: /\b(strike price|expiration date|underlying asset)\b/gi, color: 'var(--brand-secondary)', weight: 600 }, // Key terms in secondary
+    { regex: /\b(strike price)\b/gi, color: 'var(--brand-secondary)', weight: 600, tooltip: 'strike price' }, // Strike price with tooltip
+    { regex: /\b(strike)\b/gi, color: 'var(--brand-secondary)', weight: 600, tooltip: 'strike' }, // Strike with tooltip
+    { regex: /\b(expiration date)\b/gi, color: 'var(--brand-secondary)', weight: 600, tooltip: 'expiration date' }, // Expiration date with tooltip
+    { regex: /\b(underlying asset)\b/gi, color: 'var(--brand-secondary)', weight: 600 }, // Underlying asset in secondary
     { regex: /\b(premium)\b/gi, color: 'var(--brand-secondary)', weight: 600, tooltip: 'premium' }, // Premium in secondary
     { regex: /\b(Call|Put|Calls|Puts)\b/g, color: 'var(--brand-primary)', weight: 600, tooltip: true }, // Call/Put in primary
     { regex: /\b(exercise|exercised|exercising)\b/gi, color: 'var(--brand-primary)', weight: 600, tooltip: 'exercise' }, // Exercise in primary
@@ -153,6 +159,13 @@ export default function LessonPage() {
 
   // Load content synchronously from files
   const lesson = getLesson(levelId, courseId, lessonId);
+  const lessons = getLessons(levelId, courseId);
+  
+  // Find next lesson
+  const currentLessonIndex = lessons.findIndex(l => l.id === lessonId);
+  const nextLesson = currentLessonIndex >= 0 && currentLessonIndex < lessons.length - 1 
+    ? lessons[currentLessonIndex + 1] 
+    : null;
 
   const handleSignOut = async () => {
     try {
@@ -401,13 +414,33 @@ export default function LessonPage() {
 
           <div className="badge-row">
             <span className="badge">Page #{lesson.order}</span>
-            <span className="badge">Introduction</span>
+            <span className="badge">{lesson.order === 1 ? 'Introduction' : 'Lesson'}</span>
           </div>
         </section>
 
         {lesson.questions && lesson.questions.length > 0 && (
           <section className="glass-card">
             <Quiz questions={lesson.questions as QuizQuestion[]} />
+          </section>
+        )}
+
+        {nextLesson && (
+          <section className="glass-card" style={{ textAlign: 'center', padding: '2rem' }}>
+            <Link
+              href={`/levels/${levelId}/courses/${courseId}/lessons/${nextLesson.id}`}
+              className="button-primary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                fontSize: '1.1rem',
+                padding: '1rem 2rem',
+                fontWeight: 600,
+              }}
+            >
+              Next: {nextLesson.title}
+              <span>→</span>
+            </Link>
           </section>
         )}
       </main>
