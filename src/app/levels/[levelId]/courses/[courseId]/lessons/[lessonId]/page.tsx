@@ -9,6 +9,91 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { signOut } from 'firebase/auth';
 import { getLesson } from '@/services/content';
 import Quiz, { type QuizQuestion } from '@/components/Quiz';
+import Tooltip from '@/components/Tooltip';
+
+// Tooltip definitions
+const tooltipDefinitions: Record<string, string> = {
+  premium: 'The price you pay for buying the option',
+  call: 'The right to buy stock at a set price within a defined amount of time',
+  put: 'The right to sell stock at a set price within a defined amount of time',
+  exercise: 'You act on your option call.',
+  exercised: 'You act on your option call.',
+  exercising: 'You act on your option call.',
+};
+
+// Helper function to highlight key terms in text with tooltips
+function highlightText(text: string) {
+  const patterns = [
+    { regex: /\$(\d+)/g, color: '#10b981', weight: 600 }, // Dollar amounts in green
+    { regex: /\b(strike price|expiration date|underlying asset)\b/gi, color: 'var(--brand-secondary)', weight: 600 }, // Key terms in secondary
+    { regex: /\b(premium)\b/gi, color: 'var(--brand-secondary)', weight: 600, tooltip: 'premium' }, // Premium in secondary
+    { regex: /\b(Call|Put|Calls|Puts)\b/g, color: 'var(--brand-primary)', weight: 600, tooltip: true }, // Call/Put in primary
+    { regex: /\b(exercise|exercised|exercising)\b/gi, color: 'var(--brand-primary)', weight: 600, tooltip: 'exercise' }, // Exercise in primary
+  ];
+
+  let result: Array<{ text: string; color?: string; weight?: number; tooltip?: string | boolean }> = [{ text }];
+
+  patterns.forEach(({ regex, color, weight, tooltip }) => {
+    const newResult: Array<{ text: string; color?: string; weight?: number; tooltip?: string | boolean }> = [];
+    result.forEach((segment) => {
+      if (segment.color) {
+        // Already highlighted, keep as is
+        newResult.push(segment);
+      } else {
+        // Create a new regex instance for each test
+        const testRegex = new RegExp(regex.source, regex.flags);
+        const parts = segment.text.split(regex);
+        parts.forEach((part, idx) => {
+          if (part) {
+            // Test if this part matches the pattern
+            testRegex.lastIndex = 0;
+            if (testRegex.test(part)) {
+              const lowerPart = part.toLowerCase();
+              let tooltipKey: string | undefined;
+              
+              if (tooltip === true) {
+                // For Call/Put, determine which one
+                if (lowerPart.includes('call')) {
+                  tooltipKey = 'call';
+                } else if (lowerPart.includes('put')) {
+                  tooltipKey = 'put';
+                }
+              } else if (typeof tooltip === 'string') {
+                tooltipKey = tooltip;
+              }
+              
+              newResult.push({ text: part, color, weight, tooltip: tooltipKey });
+            } else {
+              newResult.push({ text: part });
+            }
+          }
+        });
+      }
+    });
+    result = newResult;
+  });
+
+  return result.map((segment, idx) => {
+    if (segment.color) {
+      const styledSpan = (
+        <span style={{ color: segment.color, fontWeight: segment.weight, cursor: segment.tooltip ? 'help' : 'default', textDecoration: segment.tooltip ? 'underline' : 'none', textDecorationStyle: segment.tooltip ? 'dotted' : 'none', textDecorationThickness: segment.tooltip ? '1px' : '0' }}>
+          {segment.text}
+        </span>
+      );
+      
+      if (segment.tooltip && typeof segment.tooltip === 'string' && tooltipDefinitions[segment.tooltip]) {
+        return (
+          <Tooltip key={idx} text={segment.text} definition={tooltipDefinitions[segment.tooltip]}>
+            {styledSpan}
+          </Tooltip>
+        );
+      }
+      
+      return <span key={idx}>{styledSpan}</span>;
+    }
+    return <span key={idx}>{segment.text}</span>;
+  });
+}
 
 export default function LessonPage() {
   const router = useRouter();
@@ -123,7 +208,7 @@ export default function LessonPage() {
           )}
 
           {lesson.textContent && (
-            <article style={{ display: 'grid', gap: '1rem', color: 'var(--text-secondary)' }}>
+            <article style={{ display: 'grid', gap: '1.5rem', color: 'var(--text-secondary)' }}>
               {lesson.textContent.split('\n\n').map((paragraph, idx) => {
                 // Skip empty paragraphs
                 if (!paragraph.trim()) return null;
@@ -131,6 +216,11 @@ export default function LessonPage() {
                 // Check if paragraph contains bullet points
                 const lines = paragraph.split('\n').filter(line => line.trim());
                 const hasBullets = lines.some(line => line.trim().startsWith('•') || line.trim().startsWith('-'));
+                
+                // Detect special content types
+                const isCoreInsight = paragraph.toLowerCase().includes('core insight');
+                const isExample = paragraph.toLowerCase().includes('example') || paragraph.toLowerCase().includes('for example');
+                const isKeySentence = paragraph.includes(':') && paragraph.length < 200 && paragraph.split(' ').length < 30;
                 
                 if (hasBullets) {
                   // Split into intro text and bullet items
@@ -153,36 +243,113 @@ export default function LessonPage() {
                   return (
                     <div key={idx}>
                       {introLines.length > 0 && (
-                        <p style={{ margin: 0, marginBottom: '0.5rem', lineHeight: '1.6' }}>
+                        <p style={{ margin: 0, marginBottom: '0.75rem', lineHeight: '1.7', fontSize: '1.05rem', color: 'var(--text-primary)' }}>
                           {introLines.join(' ')}
                         </p>
                       )}
                       {bulletItems.length > 0 && (
                         <ul style={{ margin: 0, paddingLeft: '1.5rem', listStyle: 'none' }}>
-                          {bulletItems.map((item, itemIdx) => (
-                            <li key={itemIdx} style={{ marginBottom: '0.5rem', position: 'relative', lineHeight: '1.6' }}>
-                              <span style={{ position: 'absolute', left: '-1.5rem' }}>•</span>
-                              {item.replace(/^[•-]\s*/, '')}
-                            </li>
-                          ))}
+                          {bulletItems.map((item, itemIdx) => {
+                            const cleanItem = item.replace(/^[•-]\s*/, '');
+                            
+                            return (
+                              <li key={itemIdx} style={{ marginBottom: '0.75rem', position: 'relative', lineHeight: '1.7', fontSize: '1.05rem' }}>
+                                <span style={{ position: 'absolute', left: '-1.5rem', color: 'var(--brand-primary)', fontSize: '1.2rem' }}>•</span>
+                                <span>{highlightText(cleanItem)}</span>
+                              </li>
+                            );
+                          })}
                         </ul>
                       )}
                     </div>
                   );
                 }
                 
-                // Regular paragraph - check if it's a heading (no period, shorter, bold-like)
+                // Regular paragraph - check if it's a heading
                 const isHeading = paragraph.length < 100 && !paragraph.includes('.') && paragraph.split(' ').length < 10;
+                
+                // Enhanced formatting based on content type
+                if (isCoreInsight) {
+                  return (
+                    <div
+                      key={idx}
+                      style={{
+                        padding: '1.25rem 1.5rem',
+                        borderRadius: '12px',
+                        background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(99, 102, 241, 0.05))',
+                        border: '1px solid rgba(99, 102, 241, 0.2)',
+                        margin: 0,
+                      }}
+                    >
+                      <p style={{ margin: 0, lineHeight: '1.7', fontSize: '1.05rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+                        <span style={{ color: 'var(--brand-primary)', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.85rem', letterSpacing: '0.05em' }}>Core Insight</span>
+                        <br />
+                        {paragraph.replace(/Core insight/gi, '').trim()}
+                      </p>
+                    </div>
+                  );
+                }
+                
+                if (isExample) {
+                  return (
+                    <div
+                      key={idx}
+                      style={{
+                        padding: '1rem 1.25rem',
+                        borderRadius: '10px',
+                        background: 'rgba(16, 185, 129, 0.08)',
+                        borderLeft: '3px solid #10b981',
+                        margin: 0,
+                      }}
+                    >
+                      <p style={{ margin: 0, lineHeight: '1.7', fontSize: '1.05rem', color: 'var(--text-primary)' }}>
+                        <span style={{ color: '#10b981', fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Example: </span>
+                        {paragraph.replace(/For example,?/gi, '').replace(/Example:?/gi, '').trim()}
+                      </p>
+                    </div>
+                  );
+                }
+                
+                if (isKeySentence) {
+                  return (
+                    <div key={idx}>
+                      <p style={{ margin: 0, lineHeight: '1.7', fontSize: '1.1rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+                        {paragraph.split(':').map((part, partIdx, arr) => {
+                          if (partIdx === 0 && arr.length > 1) {
+                            return (
+                              <span key={partIdx}>
+                                <span style={{ color: 'var(--brand-primary)', fontWeight: 700 }}>{part}:</span>
+                              </span>
+                            );
+                          }
+                          return <span key={partIdx}>{part}</span>;
+                        })}
+                      </p>
+                    </div>
+                  );
+                }
                 
                 return (
                   <div key={idx}>
                     {isHeading ? (
-                      <h3 style={{ margin: 0, marginBottom: '0.5rem', fontWeight: 600, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
+                      <h3
+                        style={{
+                          margin: 0,
+                          marginBottom: '0.75rem',
+                          fontWeight: 700,
+                          fontSize: '1.3rem',
+                          color: 'var(--brand-primary)',
+                          background: 'linear-gradient(135deg, var(--brand-primary), var(--brand-secondary))',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          backgroundClip: 'text',
+                        }}
+                      >
                         {paragraph}
                       </h3>
                     ) : (
-                      <p style={{ margin: 0, lineHeight: '1.6' }}>
-                        {paragraph}
+                      <p style={{ margin: 0, lineHeight: '1.7', fontSize: '1.05rem', color: 'var(--text-primary)' }}>
+                        {highlightText(paragraph)}
                       </p>
                     )}
                   </div>
