@@ -17,6 +17,14 @@ interface CurriculumData {
         title: string;
         videoId: string;
         textContent: string;
+        questions?: Array<{
+          question: string;
+          options: Array<{
+            text: string;
+            isCorrect: boolean;
+            feedback: string;
+          }>;
+        }>;
         order: number;
       }>;
     }>;
@@ -120,6 +128,7 @@ export function getLessons(levelId: string, courseId: string): Lesson[] {
       title: lesson.title,
       videoId: lesson.videoId,
       textContent: lesson.textContent,
+      questions: lesson.questions,
       order: lesson.order,
     }))
     .sort((a, b) => a.order - b.order);
@@ -164,6 +173,7 @@ export function getLesson(
     title: lesson.title,
     videoId: lesson.videoId,
     textContent: lesson.textContent,
+    questions: lesson.questions,
     order: lesson.order,
   };
 }

@@ -8,6 +8,7 @@ import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import { signOut } from 'firebase/auth';
 import { getLesson } from '@/services/content';
+import Quiz, { type QuizQuestion } from '@/components/Quiz';
 
 export default function LessonPage() {
   const router = useRouter();
@@ -191,10 +192,16 @@ export default function LessonPage() {
           )}
 
           <div className="badge-row">
-            <span className="badge">Order #{lesson.order}</span>
-            <span className="badge">Reflect &amp; apply</span>
+            <span className="badge">Page #{lesson.order}</span>
+            <span className="badge">Introduction</span>
           </div>
         </section>
+
+        {lesson.questions && lesson.questions.length > 0 && (
+          <section className="glass-card">
+            <Quiz questions={lesson.questions as QuizQuestion[]} />
+          </section>
+        )}
       </main>
 
       <footer className="footer">Great traders review each lesson twice—once to learn it, once to own it.</footer>

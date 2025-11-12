@@ -13,9 +13,41 @@
           "lessons": [
             {
               "id": "what-is-an-option-the-right-not-the-obligation",
-              "title": "What is an Option? The Right or the Obligation",
+              "title": "What is an Option? Insurance for your stocks!",
               "videoId": "",
-              "textContent": "Welcome to the first step in your options trading journey! Before we dive into strategies, we need to understand the fundamental building block: the option itself.\n\nThe \"No Obligation\" Contract\n\nAt its core, an option is a financial contract. It gives the person who buys it the right, but critically, not the obligation, to buy or sell an underlying asset (like a stock) at a predetermined price on or before a specific date.\n\nThink of it like a coupon for a grocery store:\n\n• The coupon gives you the right to buy a can of soup for $1.\n• You are not obligated to buy the soup. You can let the coupon expire.\n• The coupon has an expiration date.\n• The $1 price is a predetermined price.\n\nIn the world of trading, this structure provides incredible flexibility, which is why traders love options.\n\nKey Components of Every Option\n\nEvery option contract has a few key pieces of information you'll need to know:\n\n• Underlying Asset: The stock, ETF, or index the option is based on (e.g., Apple stock, ticker: AAPL).\n• Type: Is it a Call (the right to buy) or a Put (the right to sell)? We'll cover this in the next lesson.\n• Strike Price: The predetermined price at which you can buy or sell the stock.\n• Expiration Date: The date the contract becomes void.\n• Premium: The price you pay to buy the option contract.\n\nWhy Do People Use Options?\n\nTraders use options for two primary reasons:\n\nSpeculation: To make a leveraged bet on the future direction of a stock's price. Because options are cheaper than the stock itself, the potential percentage returns (and losses) can be much higher.\n\nHedging: To protect their existing portfolio. For example, if you own 100 shares of a stock, you could buy a put option to protect yourself against a potential price drop.",
+              "textContent": "The right, not the obligation (think: \"price\" insurance. Insuring the price of a stock)\n\nCore insight\n\nAn option is a paid right. You pay a premium today to lock in a guaranteed price you may use later—only if it helps you. That's why traders love them: your downside is capped at the cost of the premium, but you keep the choice on if you want to exercise the insurance policy or not.\n\nThe Insurance Analogy (that works for both buying and selling options)\n\nThere are two types of options: Calls (right to buy stock at a set price) and Puts (right to sell stock at a set price).\n\nCall = Price ceiling insurance (right to buy).\n\nYou pay the premium price to purchase a call to protect yourself from the stock running away. A call lets you buy at the strike price even if the market rips higher. If price doesn't rise? You don't have to buy—your worst case is the premium you paid. For example, if your option call strike price is $100 for ABC stock, and that stock jumps to $150 per share, you will have the right to purchase those shares at $100.\n\nPut = Price floor insurance (right to sell).\n\nYou pay to protect yourself from a drop. A put lets you sell at the strike price even if the market tanks. If price holds up? You don't have to sell—again, your worst case is the premium. For example, if your option put strike price is $100 for ABC stock, and that stock falls to $50, you will have the right to sell those shares at $100.\n\nOne sentence: Calls insure your maximum buy price for a stock; puts insure your minimum sell price for a stock.",
+              "questions": [
+                {
+                  "question": "If you have a call with a strike of $100 and the stock you want to buy is currently $90, would you exercise (use) your call insurance policy?",
+                  "options": [
+                    {
+                      "text": "Yes",
+                      "isCorrect": false,
+                      "feedback": "You would be paying $100 for a stock that you can just buy outright for $90."
+                    },
+                    {
+                      "text": "No",
+                      "isCorrect": true,
+                      "feedback": "It is cheaper to buy the stock from the market than to use (exercise) your call option."
+                    }
+                  ]
+                },
+                {
+                  "question": "You own 100 shares of ABC company at a price of $150. You want insurance for those shares and purchase a Put option with a strike of $130. ABC company unfortunately falls to $110 per share. Would you exercise your put or sell in the market?",
+                  "options": [
+                    {
+                      "text": "Exercise Put",
+                      "isCorrect": true,
+                      "feedback": "You would get $130 for each share instead of the $110 per share market price."
+                    },
+                    {
+                      "text": "Sell to the Market",
+                      "isCorrect": false,
+                      "feedback": "You would only get $110 per share, when you could have exercised your Put and gotten $130 per share."
+                    }
+                  ]
+                }
+              ],
               "order": 1
             },
             {
