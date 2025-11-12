@@ -75,8 +75,20 @@ function highlightText(text: string) {
 
   return result.map((segment, idx) => {
     if (segment.color) {
+      const style: React.CSSProperties = {
+        color: segment.color,
+        fontWeight: segment.weight,
+        cursor: segment.tooltip ? 'help' : 'default',
+      };
+      
+      if (segment.tooltip) {
+        style.textDecoration = 'underline';
+        style.textDecorationStyle = 'dotted';
+        style.textDecorationThickness = '1px';
+      }
+      
       const styledSpan = (
-        <span style={{ color: segment.color, fontWeight: segment.weight, cursor: segment.tooltip ? 'help' : 'default', textDecoration: segment.tooltip ? 'underline' : 'none', textDecorationStyle: segment.tooltip ? 'dotted' : 'none', textDecorationThickness: segment.tooltip ? '1px' : '0' }}>
+        <span style={style}>
           {segment.text}
         </span>
       );
