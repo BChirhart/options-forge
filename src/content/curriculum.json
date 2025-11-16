@@ -15,131 +15,36 @@
               "id": "what-is-an-option-the-right-not-the-obligation",
               "title": "What is an Option? Insurance for your stocks!",
               "videoId": "",
-              "textContent": "The right, not the obligation (think: \"price\" insurance. Insuring the price of a stock)\n\nCore insight\n\nAn option is a paid right. You pay a premium today to lock in a guaranteed price you may use later—only if it helps you. That's why traders love them: your downside is capped at the cost of the premium, but you keep the choice on if you want to exercise the insurance policy or not.\n\nThe Insurance Analogy (that works for both buying and selling options)\n\nThere are two types of options: Calls (right to buy stock at a set price) and Puts (right to sell stock at a set price).\n\nCall = Price ceiling insurance (right to buy).\n\nExample: You pay the premium price to purchase a call to protect yourself from the stock running away. A call lets you buy at the strike price even if the market rips higher. If price doesn't rise? You don't have to buy—your worst case is the premium you paid. if your option call strike price is $100 for ABC stock, and that stock jumps to $150 per share, you will have the right to purchase those shares at $100.  It's like filing a claim with your insurance company to receive the benefit that your premium paid for.\n\nPut = Price floor insurance (right to sell).\n\nExample: You pay to protect yourself from a drop. A put lets you sell at the strike price even if the market tanks. If price holds up? You don't have to sell—again, your worst case is the premium. if your option put strike price is $100 for ABC stock, and that stock falls to $50, you will have the right to sell those shares at $100.  Again, it's like filing an insurance claim against the disaster that is your stock and it's current market price.\n\nOne sentence: Calls insure your maximum buy price for a stock; puts insure your minimum sell price for a stock.",
-              "questions": [
-                {
-                  "question": "If you have a call with a strike of $100 and the stock you want to buy is currently $90, would you exercise (use) your call insurance policy?",
-                  "options": [
-                    {
-                      "text": "Yes",
-                      "isCorrect": false,
-                      "feedback": "You would be paying $100 for a stock that you can just buy outright for $90."
-                    },
-                    {
-                      "text": "No",
-                      "isCorrect": true,
-                      "feedback": "It is cheaper to buy the stock from the market than to use (exercise) your call option."
-                    }
-                  ]
-                },
-                {
-                  "question": "You own 100 shares of ABC company at a price of $150. You want insurance for those shares and purchase a Put option with a strike of $130. ABC company unfortunately falls to $110 per share. Would you exercise your put or sell in the market?",
-                  "options": [
-                    {
-                      "text": "Exercise Put",
-                      "isCorrect": true,
-                      "feedback": "You would get $130 for each share instead of the $110 per share market price."
-                    },
-                    {
-                      "text": "Sell to the Market",
-                      "isCorrect": false,
-                      "feedback": "You would only get $110 per share, when you could have exercised your Put and gotten $130 per share."
-                    }
-                  ]
-                }
-              ],
               "order": 1
             },
             {
               "id": "stocks-vs-options-ownership-vs-rights",
               "title": "Options - the Parts and Pieces of a Contract",
               "videoId": "",
-              "textContent": "The moving parts (in plain English)\n\nStrike price: The insured price (your ceiling for calls / floor for puts).\n\nExpiration date: The policy end date; after this, your right disappears, the insurance expires.\n\nPremium: The cost of your policy (your maximum possible loss as a buyer).\n\nContract size: 1 listed option typically controls 100 shares.\n\nExample: Call (right to buy):\n\nStrike $50, premium $2 per share. If stock rips to $60, you can still buy at $50. If stock stays ≤ $50, you let it expire. Max loss = $2 × 100 = $200 per contract.\n\nExample: Put (right to sell):\n\nStrike $50, premium $2 per share. If stock dumps to $40, you can sell at $50. If stock stays ≥ $50, you let it expire. Max loss = $200 per contract.",
-              "questions": [
-                {
-                  "question": "True/False - If you buy a Call, you are required to purchase the stock at the strike price before the option expires?",
-                  "options": [
-                    {
-                      "text": "True",
-                      "isCorrect": false,
-                      "feedback": "As an Option buyer, you have the \"option\" to exercise the Call or not. Allowing it to expire worthless is very common."
-                    },
-                    {
-                      "text": "False",
-                      "isCorrect": true,
-                      "feedback": "As an Option buyer, you have the \"option\" to exercise the Call or not. Allowing it to expire worthless is very common."
-                    }
-                  ]
-                },
-                {
-                  "question": "What is the price you will pay to buy this call?\n\nStrike - $50\n\nPremium - $2\n\nExpiration Date - 12/19/2025",
-                  "options": [
-                    {
-                      "text": "A - $50",
-                      "isCorrect": false,
-                      "feedback": "This is the strike price of the Option contract which is the negotiated price between you and the seller for the underlying stock."
-                    },
-                    {
-                      "text": "B - $2",
-                      "isCorrect": false,
-                      "feedback": "Close! But incorrect. While this IS the premium price, this is the \"per-share\" premium price and needs to be multiplied by the number of shares in the contract, which is almost always 100."
-                    },
-                    {
-                      "text": "C - Nothing until I exercise",
-                      "isCorrect": false,
-                      "feedback": "Insurance always costs something. No one will insure you for free."
-                    },
-                    {
-                      "text": "D - $200",
-                      "isCorrect": true,
-                      "feedback": "$2 premium x 100 shares."
-                    }
-                  ]
-                },
-                {
-                  "question": "True/False - Purchasing an option contract is an agreement between you and another trader?",
-                  "options": [
-                    {
-                      "text": "True",
-                      "isCorrect": true,
-                      "feedback": "While always anonymous, your transaction is between yourself and another trader in the market, not a public \"float\" as it is in stock transactions."
-                    },
-                    {
-                      "text": "False",
-                      "isCorrect": false,
-                      "feedback": "While always anonymous, your transaction is between yourself and another trader in the market, not a public \"float\" as it is in stock transactions."
-                    }
-                  ]
-                }
-              ],
               "order": 2
             },
             {
               "id": "calls-vs-puts-the-two-sides-of-the-coin",
               "title": "Calls vs. Puts: The Two Sides of the Coin",
               "videoId": "placeholder_103",
-              "textContent": "...",
               "order": 3
             },
             {
               "id": "the-core-four-strike-expiration-premium-and-underlying",
               "title": "The Core Four: Strike, Expiration, Premium, and Underlying",
               "videoId": "placeholder_104",
-              "textContent": "...",
               "order": 4
             },
             {
               "id": "understanding-moneyness-in-at-and-out-of-the-money",
               "title": "Understanding 'Moneyness': In, At, and Out of the Money",
               "videoId": "placeholder_105",
-              "textContent": "...",
               "order": 5
             },
             {
               "id": "decoding-the-option-chain",
               "title": "Decoding the Option Chain",
               "videoId": "placeholder_106",
-              "textContent": "...",
               "order": 6
             }
           ]
@@ -154,35 +59,30 @@
               "id": "the-goal-of-buying-a-call-unlimited-profit-potential",
               "title": "The Goal of Buying a Call: Unlimited Profit Potential",
               "videoId": "placeholder_201",
-              "textContent": "...",
               "order": 1
             },
             {
               "id": "risk-vs-reward-whats-the-most-you-can-lose",
               "title": "Risk vs. Reward: What's the Most You Can Lose?",
               "videoId": "placeholder_202",
-              "textContent": "...",
               "order": 2
             },
             {
               "id": "reading-the-call-side-of-the-option-chain",
               "title": "Reading the Call Side of the Option Chain",
               "videoId": "placeholder_203",
-              "textContent": "...",
               "order": 3
             },
             {
               "id": "breakeven-calculating-your-target-price",
               "title": "Breakeven: Calculating Your Target Price",
               "videoId": "placeholder_204",
-              "textContent": "...",
               "order": 4
             },
             {
               "id": "a-simple-call-buying-checklist",
               "title": "A Simple Call Buying Checklist",
               "videoId": "placeholder_205",
-              "textContent": "...",
               "order": 5
             }
           ]
@@ -197,35 +97,30 @@
               "id": "the-goal-of-buying-a-put-profiting-from-a-downturn",
               "title": "The Goal of Buying a Put: Profiting from a Downturn",
               "videoId": "placeholder_301",
-              "textContent": "...",
               "order": 1
             },
             {
               "id": "risk-vs-reward-for-a-long-put",
               "title": "Risk vs. Reward for a Long Put",
               "videoId": "placeholder_302",
-              "textContent": "...",
               "order": 2
             },
             {
               "id": "reading-the-put-side-of-the-option-chain",
               "title": "Reading the Put Side of the Option Chain",
               "videoId": "placeholder_303",
-              "textContent": "...",
               "order": 3
             },
             {
               "id": "using-puts-to-hedge-an-insurance-policy-for-your-stocks",
               "title": "Using Puts to Hedge: An Insurance Policy for Your Stocks",
               "videoId": "placeholder_304",
-              "textContent": "...",
               "order": 4
             },
             {
               "id": "a-simple-put-buying-checklist",
               "title": "A Simple Put Buying Checklist",
               "videoId": "placeholder_305",
-              "textContent": "...",
               "order": 5
             }
           ]

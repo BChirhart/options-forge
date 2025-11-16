@@ -161,8 +161,11 @@ export default function LessonPage() {
   const lesson = getLesson(levelId, courseId, lessonId);
   const lessons = getLessons(levelId, courseId);
   
-  // Find next lesson
+  // Find previous and next lessons
   const currentLessonIndex = lessons.findIndex(l => l.id === lessonId);
+  const previousLesson = currentLessonIndex > 0 
+    ? lessons[currentLessonIndex - 1] 
+    : null;
   const nextLesson = currentLessonIndex >= 0 && currentLessonIndex < lessons.length - 1 
     ? lessons[currentLessonIndex + 1] 
     : null;
@@ -218,11 +221,31 @@ export default function LessonPage() {
 
       <main className="lesson-content">
         <section className="glass-card" style={{ display: 'grid', gap: '0.75rem' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'space-between' }}>
-            <Link href={`/levels/${levelId}/courses/${courseId}`} className="button-secondary" style={{ order: 2 }}>
-              ← Back to course
-            </Link>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'space-between', alignItems: 'center' }}>
             <span className="tag" style={{ order: 1 }}>Lesson</span>
+            <div style={{ display: 'flex', gap: '0.5rem', order: 2, flexWrap: 'wrap' }}>
+              {previousLesson && (
+                <Link 
+                  href={`/levels/${levelId}/courses/${courseId}/lessons/${previousLesson.id}`} 
+                  className="button-secondary"
+                  style={{ fontSize: '0.9rem', padding: '0.5rem 1rem' }}
+                >
+                  ← Previous
+                </Link>
+              )}
+              {nextLesson && (
+                <Link 
+                  href={`/levels/${levelId}/courses/${courseId}/lessons/${nextLesson.id}`} 
+                  className="button-secondary"
+                  style={{ fontSize: '0.9rem', padding: '0.5rem 1rem' }}
+                >
+                  Next →
+                </Link>
+              )}
+              <Link href={`/levels/${levelId}/courses/${courseId}`} className="button-secondary" style={{ fontSize: '0.9rem', padding: '0.5rem 1rem' }}>
+                ← Back to course
+              </Link>
+            </div>
           </div>
           <h1 className="section-title" style={{ margin: 0 }}>{lesson.title}</h1>
           <p className="section-subtitle">

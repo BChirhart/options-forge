@@ -1,7 +1,21 @@
 import curriculumData from '@/content/curriculum.json';
+import lessonContentMap from '@/content/lessons';
 import type { Level, Course, Lesson } from '@/types';
 
-// Type for the curriculum structure
+// Type for lesson content file
+interface LessonContent {
+  textContent: string;
+  questions?: Array<{
+    question: string;
+    options: Array<{
+      text: string;
+      isCorrect: boolean;
+      feedback: string;
+    }>;
+  }>;
+}
+
+// Type for the curriculum structure (lessons don't have textContent/questions here)
 interface CurriculumData {
   levels: Array<{
     id: string;
@@ -16,15 +30,6 @@ interface CurriculumData {
         id: string;
         title: string;
         videoId: string;
-        textContent: string;
-        questions?: Array<{
-          question: string;
-          options: Array<{
-            text: string;
-            isCorrect: boolean;
-            feedback: string;
-          }>;
-        }>;
         order: number;
       }>;
     }>;
@@ -32,6 +37,17 @@ interface CurriculumData {
 }
 
 const curriculum = curriculumData as CurriculumData;
+
+/**
+ * Load lesson content from individual file
+ * Path format: [order]-levelId/[order]-courseId/[order]-lessonId
+ * But lookup uses unprefixed IDs: levelId/courseId/lessonId
+ */
+function loadLessonContent(levelId: string, courseId: string, lessonId: string): LessonContent | null {
+  // Lookup uses unprefixed IDs (the keys in lessonContentMap)
+  const path = `${levelId}/${courseId}/${lessonId}`;
+  return (lessonContentMap[path] as LessonContent | undefined) || null;
+}
 
 /**
  * Fetch all levels ordered by their `order` field.
@@ -123,14 +139,17 @@ export function getLessons(levelId: string, courseId: string): Lesson[] {
   }
 
   return course.lessons
-    .map((lesson) => ({
-      id: lesson.id,
-      title: lesson.title,
-      videoId: lesson.videoId,
-      textContent: lesson.textContent,
-      questions: lesson.questions,
-      order: lesson.order,
-    }))
+    .map((lesson) => {
+      const content = loadLessonContent(levelId, courseId, lesson.id);
+      return {
+        id: lesson.id,
+        title: lesson.title,
+        videoId: lesson.videoId,
+        textContent: content?.textContent || '',
+        questions: content?.questions,
+        order: lesson.order,
+      };
+    })
     .sort((a, b) => a.order - b.order);
 }
 
@@ -168,12 +187,14 @@ export function getLesson(
     return null;
   }
 
+  const content = loadLessonContent(levelId, courseId, lesson.id);
+
   return {
     id: lesson.id,
     title: lesson.title,
     videoId: lesson.videoId,
-    textContent: lesson.textContent,
-    questions: lesson.questions,
+    textContent: content?.textContent || '',
+    questions: content?.questions,
     order: lesson.order,
   };
 }

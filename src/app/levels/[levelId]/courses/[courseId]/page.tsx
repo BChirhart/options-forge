@@ -36,6 +36,14 @@ export default function CoursePage() {
     }
   };
 
+  // Redirect "options-fundamentals" course directly to first lesson
+  useEffect(() => {
+    if (!loading && course && courseId === 'options-fundamentals' && lessons.length > 0) {
+      const firstLesson = lessons[0];
+      router.replace(`/levels/${levelId}/courses/${courseId}/lessons/${firstLesson.id}`);
+    }
+  }, [loading, course, courseId, levelId, lessons, router]);
+
   if (loading) {
     return (
       <div className="app-shell">
@@ -56,6 +64,17 @@ export default function CoursePage() {
               Back to Level
             </Link>
           </div>
+        </main>
+      </div>
+    );
+  }
+
+  // If redirecting, show loading state
+  if (courseId === 'options-fundamentals' && lessons.length > 0) {
+    return (
+      <div className="app-shell">
+        <main className="hero">
+          <div className="glass-card">Loading lesson…</div>
         </main>
       </div>
     );
