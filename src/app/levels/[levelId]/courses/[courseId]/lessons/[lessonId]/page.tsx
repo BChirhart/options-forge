@@ -242,8 +242,12 @@ export default function LessonPage() {
                   Next →
                 </Link>
               )}
-              <Link href={`/levels/${levelId}/courses/${courseId}`} className="button-secondary" style={{ fontSize: '0.9rem', padding: '0.5rem 1rem' }}>
-                ← Back to course
+              <Link 
+                href={courseId === 'options-fundamentals' ? `/levels/${levelId}` : `/levels/${levelId}/courses/${courseId}`} 
+                className="button-secondary" 
+                style={{ fontSize: '0.9rem', padding: '0.5rem 1rem' }}
+              >
+                ← Back to {courseId === 'options-fundamentals' ? 'level' : 'course'}
               </Link>
             </div>
           </div>
