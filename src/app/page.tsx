@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/lib/firebase';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
@@ -43,10 +44,10 @@ export default function Home() {
   return (
     <div className="app-shell">
       <header className="navbar">
-        <div className="brand">
+        <Link href="/" className="brand" style={{ textDecoration: 'none', cursor: 'pointer' }}>
           <span className="brand-logo">OF</span>
           OptionsForge
-        </div>
+        </Link>
         <div className="nav-actions">
           <ThemeToggle />
         </div>

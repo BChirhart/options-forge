@@ -75,10 +75,10 @@ export default function LevelPage() {
   return (
     <div className="app-shell">
       <header className="navbar">
-        <div className="brand">
+        <Link href="/dashboard" className="brand" style={{ textDecoration: 'none', cursor: 'pointer' }}>
           <span className="brand-logo">OF</span>
           OptionsForge
-        </div>
+        </Link>
         <div className="nav-actions">
           <ThemeToggle />
           <button className="button-danger" onClick={handleSignOut}>
